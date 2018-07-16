@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+  devnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.8.0/24
+
+services:
+  gdbserver:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: liuempire/docker-clion-dev
+    security_opt:
+      - seccomp:unconfined
+    container_name: debug
+    ports:
+      - "7776:22"
+      - "7777:7777"
+    volumes:
+      - .:/home/debugger/code
+    networks:
+      devnet:
+        ipv4_address: 172.16.8.2
+    working_dir: /home/debugger/code
+    hostname: debug
+
