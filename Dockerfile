@@ -1,11 +1,11 @@
-FROM ubuntu:18.04
+FROM ubuntu:cosmic
 
 ########################################################
 # Essential packages for remote debugging and login in
 ########################################################
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    apt-utils gcc g++ openssh-server cmake build-essential gdbserver vim
+    apt-utils gcc g++ openssh-server cmake build-essential gdb gdbserver rsync vim
 
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' | chpasswd

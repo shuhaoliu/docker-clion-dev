@@ -13,7 +13,7 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    image: liuempire/docker-clion-dev
+    image: liuempire/docker_clion_dev
     security_opt:
       - seccomp:unconfined
     container_name: debug

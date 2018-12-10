@@ -1,7 +1,9 @@
 # Debugging C++ in a Docker Container with CLion
 
-> Note: source code is modified from [Cornell CS 5450 course material](
+> Note: Source code is modified from [Cornell CS 5450 course material](
 https://pages.github.coecis.cornell.edu/cs5450/website/assignments/p1/docker.html).
+
+> **Update December 2018:** this repository has been updated after the Clion 2018.3 release, which adds native remote debugging support. Check out the [official guide](https://blog.jetbrains.com/clion/2018/09/initial-remote-dev-support-clion/) It makes a dubugger's life much easier. HOORAY!
 
 This repository provides a minimal C++ project setup and the Dockerfile that
 allows developers to debug code in a Docker container using JetBrain Clion IDE.
@@ -9,24 +11,19 @@ allows developers to debug code in a Docker container using JetBrain Clion IDE.
 Debugging in a container has many benefits, especially if you are developing
 Linux applications on OS X.
 
-+ It allows a consistent environment between development and deployment;
-+ The developers are free from installing dependencies on their development
++ It allows a consistent environment for both development and deployment;
++ Developers are free from installing dependencies on their development
 machine. Some packages cannot be easily installed on OS X.
-+ The container can be launched on your development machine, or on a remote
-server.
++ The container can be launched on your development machine, or on a remote server.
 
 ## Introduction
 
-All application code, as well as its dependencies, will be installed, compiled,
-and ran within tht container. Then, we launch a `gdbserver` to allow remote
-debugging outside of the container. Clion supports remote GDB debugging sessions
-since [2016.2](https://blog.jetbrains.com/clion/2016/07/clion-2016-2-eap-remote-gdb-debug/).
+All application code, as well as its dependencies, will be installed, compiled, and ran within the container. Then, we launch a `gdbserver` to allow remote debugging outside of the container.
+
+Clion supports remote debugging feature since [2018.3](https://blog.jetbrains.com/clion/2018/09/initial-remote-dev-support-clion/).
 
 The container has a long running ssh server process, such that the container can
-be placed on a remote host. According to [this issue](https://youtrack.jetbrains.com/issue/CPP-744),
-CLion may add automation support for remote projects/toolchains in a future
-release. It may requires an ssh session to automate the process of launching
-gdbservers.
+be placed on a remote host.
 
 > The container exposes 2 ports. 7777 is for `gdbserver` connection. 22 for the
 ssh server. To avoid trouble when the container is launched on the development
@@ -35,58 +32,43 @@ to any arbitrary number in `docker-compose.yml`.
 
 ## Prerequisites
 
-On your development machine, you must have a latest version of CLion installed,
-together with a `gdb` client built for x86-64 Linux targets. On a Mac, this can
-be done with Homebrew:
-
-```bash
-brew install gdb --with-all-targets
-```
+On your development machine, you must have a CLion IDE (2018.3 or above) installed,
 
 On the host machine of your container (which can be the development machine),
 the latest Docker CE installation would be sufficient.
 
 ## Usage
 
-To debug the example, follow the following steps.
+To debug the example, follow the following steps. If you have any problem, please refer to the [official tutorial](https://blog.jetbrains.com/clion/2018/09/initial-remote-dev-support-clion/) before opening an issue.
 
 0. Import the project into CLion using the provided `CMakeLists.txt`.
+
 0. Build the container.
+
     ```bash
-    docker build -t liuempire/docker-clion-dev .
+    docker build -t liuempire/docker_clion_dev .
     ```
+
 0. Launch the container with `docker-compose`.
+
     ```bash
     docker-compose up -d
     ```
-0. Access the code inside the container. If you are running the container on the
-same machine, you may run `docker exec` command. Otherwise, `ssh` into the
-container with `ssh -p 7776 debugger@[ip-address]`. The password is `pwd`.
-0. Modify the code inside the container. Note the code is not copied into the
-container by default. Instead, in `docker-compose.yml`, we attach the project
-root directory to the container as a volume mounted to `/home/debugger/code`.
-That means any modifications to the code made on your development machine will
-directly affect the code inside the container.
-0. Build the project and launch `gdbserver` inside the container, by running
-    ```bash
-    ./start-gdb.sh
-    ```
-0. On your development machine, setup a GDB remote debugging session in CLion.
-Here is a sample configuration. ![Clion configuration](clion-config.png)
-0. Add breakpoints in Clion. Happy debugging!
+    After this step, the container is running with an ssh server daemon. Clion will automatically run/test/debug via an ssh connection. The folder where `docker-compose.yml` locates will be the mapped to `/home/debugger/code` within the container. CLion will *not* use this mapped directory.
 
-Note each time when you wish to restart the debugging session, you have to
-*manually* re-run the `start-gdb.sh` script. This might be optimized with a
-future CLion release, according to
-[this link](https://youtrack.jetbrains.com/issue/CPP-744).
+0. Configure the container toolchain in Clion. Go to ***Settings/Preferences | Build, Execution, Deployment | Toolchains***, configure the container as a remote host. The username is `debugger`. The password is `pwd`. The completed configurations should be similar to the following: ![Toolchain configuration](configs/toolchain-config.png)
+
+0. Configure the container CMake settings in CLion. Go to ***Settings/Preferences | Build, Execution, Deployment | CMake***, add a container CMake profile:![CMake configuration](configs/cmake-config.png)
+
+0. Check the file mapping settings in Clion. Before each run, code will be `rsync`-ed to the container at a temporariy location. The following configuration should be generated automatically after the previous two steps:![Deployment configuration](configs/deployment-auto-config.png)
+
+0. In your Clion, you should be able to select `Debug-Local container` in before execution.
+
+0. Add breakpoints in Clion. Happy debugging!
 
 To stop the container, run `docker-compose down`.
 
 ## Customization
 
 + Add dependency installation scripts to `Dockerfile`.
-+ Replace `CMakeLists.txt` with your customized project `CMakeLists.txt`. Make
-sure you include `-g` flag in `CMAKE_CXX_FLAGS`, or configure it in the debug
-mode.
-+ Change the name of your application binary in `start-gdb.sh`, or provide the
-new name as a parameter of running this script.
++ Replace `CMakeLists.txt` with your customized project `CMakeLists.txt`.
