@@ -1,4 +1,4 @@
-FROM ubuntu:cosmic
+FROM ubuntu:bionic
 
 ########################################################
 # Essential packages for remote debugging and login in
@@ -6,6 +6,11 @@ FROM ubuntu:cosmic
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     apt-utils gcc g++ openssh-server cmake build-essential gdb gdbserver rsync vim
+
+ADD . /code
+WORKDIR /code
+
+# Taken from - https://docs.docker.com/engine/examples/running_ssh_service/#environment-variables
 
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' | chpasswd
