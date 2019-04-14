@@ -1,4 +1,4 @@
-FROM ubuntu:cosmic
+FROM ubuntu:bionic
 
 ########################################################
 # Essential packages for remote debugging and login in

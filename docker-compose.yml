@@ -10,12 +10,10 @@ networks:
 
 services:
   gdbserver:
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
-    image: liuempire/docker_clion_dev
-    security_opt:
+    build: .
+    security_opt: # options needed for gdb debugging
       - seccomp:unconfined
+      - apparmor:unconfined
     container_name: debug
     ports:
       - "7776:22"

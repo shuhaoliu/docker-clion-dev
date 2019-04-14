@@ -3,7 +3,8 @@
 > Note: Source code is modified from [Cornell CS 5450 course material](
 https://pages.github.coecis.cornell.edu/cs5450/website/assignments/p1/docker.html).
 
-> **Update December 2018:** this repository has been updated after the Clion 2018.3 release, which adds native remote debugging support. Check out the [official guide](https://blog.jetbrains.com/clion/2018/09/initial-remote-dev-support-clion/) It makes a dubugger's life much easier. HOORAY!
+> **Update December 2018:** this repository has been updated after the Clion 2018.3 release, which adds native remote debugging support.
+Check out the [official guide](https://blog.jetbrains.com/clion/2018/09/initial-remote-dev-support-clion/) It makes a debugger's life much easier. HOORAY!
 
 This repository provides a minimal C++ project setup and the Dockerfile that
 allows developers to debug code in a Docker container using JetBrain Clion IDE.
@@ -18,7 +19,8 @@ machine. Some packages cannot be easily installed on OS X.
 
 ## Introduction
 
-All application code, as well as its dependencies, will be installed, compiled, and ran within the container. Then, we launch a `gdbserver` to allow remote debugging outside of the container.
+All application code, as well as its dependencies, will be installed, compiled, and ran within the container.
+Then, we launch a `gdbserver` to allow remote debugging outside of the container.
 
 Clion supports remote debugging feature since [2018.3](https://blog.jetbrains.com/clion/2018/09/initial-remote-dev-support-clion/).
 
@@ -60,7 +62,7 @@ To debug the example, follow the following steps. If you have any problem, pleas
 
 0. Configure the container CMake settings in CLion. Go to ***Settings/Preferences | Build, Execution, Deployment | CMake***, add a container CMake profile:![CMake configuration](configs/cmake-config.png)
 
-0. Check the file mapping settings in Clion. Before each run, code will be `rsync`-ed to the container at a temporariy location. The following configuration should be generated automatically after the previous two steps:![Deployment configuration](configs/deployment-auto-config.png)
+0. Check the file mapping settings in Clion. Before each run, code will be `rsync`-ed to the container at a temporary location. The following configuration should be generated automatically after the previous two steps:![Deployment configuration](configs/deployment-auto-config.png)
 
 0. In your Clion, you should be able to select `Debug-Local container` in before execution.
 
