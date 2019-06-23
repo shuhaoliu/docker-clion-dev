@@ -5,7 +5,7 @@ FROM ubuntu:bionic
 ########################################################
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    apt-utils gcc g++ openssh-server cmake build-essential gdb gdbserver rsync vim
+    apt-utils gcc g++ openssh-server cmake build-essential gdb gdbserver rsync vim valgrind git
 
 ADD . /code
 WORKDIR /code
