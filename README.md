@@ -19,7 +19,7 @@ machine. Some packages cannot be easily installed on OS X.
 
 ## Introduction
 
-All application code, as well as its dependencies, will be installed, compiled, and ran within the container.
+All application code, as well as its dependencies, will be installed, compiled, and run within the container.
 Then, we launch a `gdbserver` to allow remote debugging outside of the container.
 
 Clion supports remote debugging feature since [2018.3](https://blog.jetbrains.com/clion/2018/09/initial-remote-dev-support-clion/).
